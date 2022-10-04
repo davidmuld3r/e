@@ -1,0 +1,370 @@
+<html>
+<head>
+<title>Typing on Ink</title>
+
+<style>
+body
+{
+	height: 100%;
+	overflow-y: hidden;
+	text-align: right;
+	padding: 20px 0px 0px 20px;
+	margin: 0;
+}
+
+textarea
+{
+	position: relative;
+	top: 60px;
+	caret-color: transparent;
+	width: 100%;
+	max-width: 100%;
+	height: 92vh;
+	border: 0;
+	resize: none;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 20px;
+	padding-right: 44px;
+	padding-left: 19px;
+	padding-top: 0;
+	overflow-y: hidden;
+}
+
+textarea:focus
+{
+	outline: none !important;
+}
+
+button
+{
+	width: 100px;
+	background: white;
+	border: 1px solid #ddd;
+	margin: 10px;
+}
+
+
+.hide
+{
+	display: none;
+}
+
+
+.menu-btn
+{
+	position: fixed;
+	display: block;
+	top: -10px;
+	z-index: 3;
+	background: #fff;
+	width: 100px;
+	height: 24px;
+	font-size: 14px;
+	color: #888;
+	border-top-width: 0;
+	border-right-width: 0;
+}
+
+#title-button
+{
+	left: 16px;
+	right:  766px;
+	width: unset;
+	overflow-wrap: break-word;
+	overflow: hidden;
+	font-size: 18px;
+	text-align: left;
+	padding-left: 24px;
+}
+
+#down-button
+{
+	right: 66px;
+	font-size: 12px;
+}
+
+#up-button
+{
+	right: 166px;
+	font-size: 12px;
+}
+
+#save-button
+{
+	right: 266px;
+}
+
+#download-button
+{
+	right: 366px;
+}
+
+#caret-button
+{
+	right: 466px;
+}
+
+#auto-button
+{
+	right: 566px;
+}
+
+#clear-button
+{
+	right: 666px;
+}
+
+#menu-open-btn
+{
+	top: 0px;
+	right: 26px;
+	width:50px;
+	margin: 0;
+	padding: 0;
+	border-right-width: 1px;
+	color: #bbb;
+	font-size: 12px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ddd; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #999; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999; 
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="menu-bar" class="hide">
+<button class="menu-btn" id="title-button" onclick="entertitle()"></button>
+<button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
+<button class="menu-btn" id="down-button" onclick="pageup(1)">▼</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">NOCARET</button>
+<button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
+<button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
+<button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
+</div>
+<button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
+<textarea id="txt" onkeyup="txtkeyup()"></textarea>
+
+
+<script type="text/javascript">
+	var txt = document.getElementById("txt");
+	var menu_bar = document.getElementById("menu-bar");
+	var menu_open_btn = document.getElementById("menu-open-btn");
+	var savebtn = document.getElementById("save-button");
+	var autoscrollbtnel = document.getElementById("auto-button");
+	var caretbtnel = document.getElementById("caret-button");
+	var titlebtn = document.getElementById("title-button");
+	var title = localStorage.getItem("title");
+	var menu_bar_local = localStorage.getItem("menu_bar_local");
+	var caret_local = localStorage.getItem("caret_local");
+	var scroll_local = localStorage.getItem("scroll_local");
+	if (title == "" || title == null) title = "Title"
+	if (menu_bar_local == "" || menu_bar_local == null) menu_bar_local = "false"
+	if (caret_local == "" || caret_local == null) caret_local = "false"
+	if (scroll_local == "" || scroll_local == null) scroll_local = "true"
+	txt.value = localStorage.getItem("txt");
+	var txt_height = txt.offsetHeight;
+	var txt_scroll = 0;
+	var myTimeout;
+	var scroll_top_margin = 23;
+
+	txt.focus({ preventScroll: true });
+
+
+	if (menu_bar_local == "true") { menu_bar_local = "false"; openmenu(); }
+	if (caret_local == "true") { caret_local = "false"; caret3(); }
+	if (scroll_local == "false") { scroll_local = "true"; autoscrollbtn(); }
+
+
+
+	var modheight = txt_height % 23;
+	txt_height -= modheight;
+	txt.style.height = txt_height + "px";
+
+	txt.style.paddingBottom = (txt_height - scroll_top_margin) + "px";
+	titlebtn.innerHTML = title;
+
+	txt.scrollTop = localStorage.getItem("saved_scrollTop");
+
+
+	txt.onblur = function (event)
+	{ 
+		var el = this; 
+		setTimeout(function() { el.focus() }, 1);
+	};
+
+
+
+	autosave();
+
+	function autosave()
+	{
+		var autosave_timeout = setTimeout(function(){autosave();save();}, 5000);
+	}
+
+	function save(show_time=0)
+	{
+		localStorage.setItem("txt", txt.value);
+		localStorage.setItem("saved_scrollTop", txt.scrollTop);
+		if (show_time == 1){
+			savebtn.innerHTML = curr_time();
+			txt.focus();
+		}
+	}
+
+	function pageup(up = -1)
+	{
+		txt.scrollTop += up * txt_height;
+	}
+
+	function autoscrollbtn()
+	{
+		if (scroll_local == "true")
+		{
+			scroll_local = "false";
+			autoscrollbtnel.innerHTML = "NOSCROLL";
+		}
+		else
+		{
+			scroll_local = "true";
+			autoscrollbtnel.innerHTML = "SCROLL";
+		}
+		localStorage.setItem("scroll_local", scroll_local);
+	}
+
+	function clear3()
+	{
+		if (confirm("Are you sure you want to clear?") == true){ download("__CLEARED"); txt.value = "" }
+	}
+
+	function entertitle()
+	{
+		let title_input = prompt("Enter title:", title);
+		if (title_input != null && title_input != "")
+		{
+			title = title_input;
+			titlebtn.innerHTML = title;
+			localStorage.setItem("title", title);
+		}
+	}
+
+
+	function download(append="")
+	{
+		var data = new Blob([txt.value], {type: 'text/plain'});
+		var fileName = title.replace(/\s/g, '_') +"__"+ curr_date() +"__"+ curr_time("-") + append;
+
+		fetch(window.URL.createObjectURL(data), { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
+    .then(res => res.blob())
+    .then(res => {
+      const aElement = document.createElement('a');
+      aElement.setAttribute('download', fileName);
+      const href = URL.createObjectURL(res);
+      aElement.href = href;
+      aElement.setAttribute('target', '_blank');
+      aElement.click();
+      URL.revokeObjectURL(href);
+    });
+	}
+
+
+
+	function txtkeyup()
+	{
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -22
+			&& txt.scrollHeight- txt.scrollTop-txt_height < txt_height)
+		{
+			txt.scrollTop += txt_height;
+		}
+	}
+
+
+
+	function txtblur()
+	{
+		txt_scroll = txt.scrollTop;
+	}
+
+	function curr_date(sep="-")
+	{
+		var today = new Date();
+		var year = 1900 + today.getYear()
+		var month = 1 + today.getMonth()
+		var day = today.getDate()
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		return year + sep + month + sep + day;
+	}
+
+	function curr_time(sep=":")
+	{
+		var today = new Date();
+		var hours = today.getHours()
+		var minutes = today.getMinutes()
+		var seconds = today.getSeconds()
+		if (hours < 10) hours = "0" + hours;
+		if (minutes < 10) minutes = "0" + minutes;
+		if (seconds < 10) seconds = "0" + seconds;
+		return hours + sep + minutes + sep + seconds;
+	}
+
+
+	function caret3()
+	{
+		if (caret_local == "false")
+		{
+			caret_local = "true";
+			caretbtnel.innerHTML = "CARET";
+			txt.style.caretColor = "black";
+		}
+		else
+		{
+			caret_local = "false";
+			caretbtnel.innerHTML = "NOCARET";
+			txt.style.caretColor = "transparent";
+		}
+		localStorage.setItem("caret_local", caret_local);
+	}
+
+
+	function openmenu()
+	{
+		if (menu_bar_local == "false")
+		{
+			menu_bar_local = "true";
+			menu_bar.classList.remove('hide');
+			menu_open_btn.classList.add('hide');
+			menu_open_btn.innerHTML = "▷"
+		}
+		else
+		{
+			menu_bar_local = "false";
+			menu_bar.classList.add('hide');
+			menu_open_btn.classList.remove('hide');
+			menu_open_btn.innerHTML = "◁"
+		}
+		localStorage.setItem("menu_bar_local", menu_bar_local);
+	}
+
+
+</script>
+
+
+</body>
+</html>
