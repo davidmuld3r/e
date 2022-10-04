@@ -286,8 +286,8 @@ button
 
 
 	function txtkeyup()
-	{
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -222)
+	{txt.value += "  (  " + (txt.scrollHeight - txt_height * 2 - txt.scrollTop) + "  )  ";
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -22)
 		{
 			txt.scrollTop += txt_height;
 		}
