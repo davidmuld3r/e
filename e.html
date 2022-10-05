@@ -178,7 +178,7 @@ button
   function scroll_top()
   {
   	this.scrollTo( 0, 0 );
-  	document.body.classList.add('no-scroll');
+  	//document.body.classList.add('no-scroll');
   	setTimeout(function() { txt.focus(); scroll_locked = 1; }, 1);
 
   }
@@ -207,6 +207,7 @@ button
 	var scroll_top_margin = 24;
 	var time_since_last_save = 0;
 	var pending_time = -1;
+	var save_pending = false;
 
 	txt.focus({ preventScroll: true });
 
@@ -236,15 +237,17 @@ button
 
 	setInterval(function()
 	{
-		if (pending_time >= 0) pending_time += 1;
-		time_since_last_save += 1;
-		if ((pending_time >= 2 || time_since_last_save >= 5) && save_pending == true)
+		if (save_pending == true)
 		{
-			save_pending = false;
-			pending_time = -1;
-			time_since_last_save = 0;
-			save();
-			console.log ("saved " + curr_time());
+			pending_time += 1;
+			time_since_last_save += 1;
+			if ((pending_time >= 2 || time_since_last_save >= 5) && save_pending == true)
+			{
+				save_pending = false;
+				pending_time = -1;
+				time_since_last_save = 0;
+				save();
+			}
 		}
 	}, 1000);
 
