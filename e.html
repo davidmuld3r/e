@@ -21,7 +21,7 @@ textarea
 	margin-top: 5vw;
 	caret-color: transparent;
 	width: 100%;
-	max-width: calc(~"100vh - 20vw");
+	max-width: calc(~"100vh - 10vw");
 	height: 85vh;
 	border: 0;
 	resize: none;
@@ -155,7 +155,7 @@ button
 <button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR@</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
@@ -219,7 +219,7 @@ button
 	txt.onblur = function (event)
 	{ 
 		var el = this; 
-		setTimeout(function() { el.focus() }, 1);
+		//setTimeout(function() { el.focus() }, 1);
 	};
 
 
