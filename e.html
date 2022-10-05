@@ -15,11 +15,6 @@ body
 	padding: 0;
 }
 
-.no-scroll
-{
-	overflow: hidden;
-}
-
 textarea
 {
 	position: relative;
@@ -160,34 +155,16 @@ button
 <button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEARFFF</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
 
-<div id="scroll-dummy">
-	<br><br><br><br><br><br>
-	<button style="font-size: 3vw; padding: 2vw 3vw;" onclick="scroll_top();">Ready!</button>
-	<br><br><br><br><br><br>
-</div>
-
-
 <script type="text/javascript">
-
-
-  function scroll_top()
-  {
-  	this.scrollTo( 0, 0 );
-  	//document.body.classList.add('no-scroll');
-  	scroll_dummy.classList.add('hide');
-  	setTimeout(function() { txt.focus(); scroll_locked = 1; }, 1);
-
-  }
 
 
   var scroll_locked = 0;
 	var txt = document.getElementById("txt");
-	var scroll_dummy = document.getElementById("scroll-dummy");
 	var menu_bar = document.getElementById("menu-bar");
 	var menu_open_btn = document.getElementById("menu-open-btn");
 	var savebtn = document.getElementById("save-button");
@@ -220,8 +197,8 @@ button
 
 
 
-	var modheight = txt_height % 24;
-	txt_height -= modheight;
+	txt_height -= txt_height % 24;
+	txt_height -= 48;
 	txt.style.height = txt_height + "px";
 
 	txt.style.paddingBottom = (txt_height - scroll_top_margin) + "px";
