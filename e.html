@@ -166,9 +166,11 @@ button
 
 <script type="text/javascript">
 
+	var txt = document.getElementById("txt");
+	
 	(function( win ){
 	var doc = win.document;
-					txt.value += "function"
+					txt.value += "function";
 	
 		//scroll to 1
 		win.scrollTo( 0, 1 );
@@ -178,13 +180,12 @@ button
 			},
 		
 			//reset to 0 on bodyready, if needed
-					txt.value += "bodyready"
 			bodycheck = setInterval(function(){
 				if( doc.body ){
 					clearInterval( bodycheck );
 					scrollTop = getScrollTop();
 					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
-					txt.value += "start"
+					txt.value += "start";
 				}	
 			}, 15 );
 		
@@ -192,7 +193,7 @@ button
 			setTimeout(function(){
 					//reset to hide addr bar at onload
 					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
-					txt.value += "fin"
+					txt.value += "fin";
 			}, 0);
 		}, false );
 })( this );
@@ -200,7 +201,6 @@ button
 
 
 
-	var txt = document.getElementById("txt");
 	var menu_bar = document.getElementById("menu-bar");
 	var menu_open_btn = document.getElementById("menu-open-btn");
 	var savebtn = document.getElementById("save-button");
