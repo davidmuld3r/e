@@ -161,7 +161,7 @@ button
 <button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR--+</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
@@ -170,6 +170,11 @@ button
 
 
 <script type="text/javascript">
+
+
+
+
+	//  ADD PAGE NUMBER BELOW UP  AND DOWN ARROW
 
 
 	var txt = document.getElementById("txt");
@@ -207,7 +212,7 @@ button
 
   var mod_height = 48 + txt_height % 24;
 	txt_height -= mod_height;
-	scroll_dummy.style.height = mod_height + "px";
+	scroll_dummy.style.height = (mod_height-1) + "px";
 	txt.style.height = txt_height + "px";
 
 	txt.style.paddingBottom = (txt_height - scroll_top_margin) + "px";
