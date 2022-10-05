@@ -15,9 +15,14 @@ body
 	padding: 0;
 }
 
+.no-scroll
+{
+	overflow: hidden;
+}
+
 textarea
 {
-	position: unset;
+	position: relative;
 	margin-top: 5vw;
 	caret-color: transparent;
 	width: 100%;
@@ -155,14 +160,15 @@ button
 <button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEARqqqq</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
 
-<div id="scroll-dummy" style="height: 2000px;">
+<div id="scroll-dummy">
 	<br><br><br><br><br><br>
 	<button style="font-size: 3vw; padding: 2vw 3vw;" onclick="scroll_top();">Hide Address bar</button>
+	<br><br><br><br><br><br>
 </div>
 
 
@@ -171,12 +177,14 @@ button
 
   function scroll_top()
   {
-  	document.body.scrollTop = 0;
-  	txt.focus();
+  	this.scrollTo( 0, 0 );
+  	document.body.classList.add('no-scroll');
+  	setTimeout(function() { txt.focus(); scroll_locked = 1; }, 1);
+
   }
 
 
-
+  var scroll_locked = 0;
 	var txt = document.getElementById("txt");
 	var menu_bar = document.getElementById("menu-bar");
 	var menu_open_btn = document.getElementById("menu-open-btn");
@@ -197,6 +205,8 @@ button
 	var txt_scroll = 0;
 	var myTimeout;
 	var scroll_top_margin = 24;
+	var time_since_last_save = 0;
+	var pending_time = -1;
 
 	txt.focus({ preventScroll: true });
 
@@ -220,17 +230,26 @@ button
 	txt.onblur = function (event)
 	{ 
 		var el = this; 
-		//setTimeout(function() { el.focus() }, 1);
+		if (scroll_locked == 1) setTimeout(function() { el.focus() }, 1);
 	};
 
 
-
-	autosave();
-
-	function autosave()
+	setInterval(function()
 	{
-		var autosave_timeout = setTimeout(function(){autosave();save();}, 5000);
-	}
+		if (pending_time >= 0) pending_time += 1;
+		time_since_last_save += 1;
+		if ((pending_time >= 2 || time_since_last_save >= 5) && save_pending == true)
+		{
+			save_pending = false;
+			pending_time = -1;
+			time_since_last_save = 0;
+			save();
+			console.log ("saved " + curr_time());
+		}
+	}, 1000);
+
+
+
 
 	function save(show_time=0)
 	{
@@ -307,6 +326,9 @@ button
 	function txtkeyup()
 	{
 		txt.value += " " + (txt.scrollHeight - txt_height * 2 - txt.scrollTop);
+
+		save_pending = true;
+		pending_time = 0;
 		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -72
 			&& txt.scrollHeight- txt.scrollTop-txt_height < txt_height)
 		{
