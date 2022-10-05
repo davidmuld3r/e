@@ -161,7 +161,7 @@ button
 <button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR999</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR777</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
@@ -171,7 +171,10 @@ button
 
 <script type="text/javascript">
 
-	document.body.scrollTop += 1000;
+	//document.body.scrollTop += 1000;
+	(function( win ){
+	win.scrollTo(0, 1000);
+  })( this );
 
 
 
