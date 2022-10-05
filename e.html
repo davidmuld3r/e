@@ -156,7 +156,7 @@ button
 <button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR33</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
@@ -166,41 +166,11 @@ button
 
 <script type="text/javascript">
 
+	document.body.scrollTop += 1000;
+
+
+
 	var txt = document.getElementById("txt");
-	
-	(function( win ){
-	var doc = win.document;
-					txt.value += "function";
-	
-		//scroll to 1
-		win.scrollTo( 0, 1 );
-		var scrollTop = 1,
-			getScrollTop = function(){
-				return win.pageYOffset || doc.compatMode === "CSS1Compat" && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
-			},
-		
-			//reset to 0 on bodyready, if needed
-			bodycheck = setInterval(function(){
-				if( doc.body ){
-					clearInterval( bodycheck );
-					scrollTop = getScrollTop();
-					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
-					txt.value += "start";
-				}	
-			}, 15 );
-		
-		win.addEventListener( "load", function(){
-			setTimeout(function(){
-					//reset to hide addr bar at onload
-					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
-					txt.value += "fin";
-			}, 0);
-		}, false );
-})( this );
-
-
-
-
 	var menu_bar = document.getElementById("menu-bar");
 	var menu_open_btn = document.getElementById("menu-open-btn");
 	var savebtn = document.getElementById("save-button");
@@ -216,7 +186,6 @@ button
 	if (caret_local == "" || caret_local == null) caret_local = "false"
 	if (scroll_local == "" || scroll_local == null) scroll_local = "true"
 	txt.value = localStorage.getItem("txt");
-  //txt.style.height = () + "px";
 	var txt_height = txt.offsetHeight;
 	var txt_scroll = 0;
 	var myTimeout;
