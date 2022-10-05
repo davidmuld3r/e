@@ -6,30 +6,29 @@
 <style>
 body
 {
-	height: 100%;
 	overflow-y: hidden;
 	text-align: right;
-	padding: 20px 0px 0px 20px;
 	margin: 0;
+	padding: 0;
 }
 
 textarea
 {
 	position: unset;
-	top: 60px;
-	margin-top: 60px;
+	margin-top: 5%;
 	caret-color: transparent;
 	width: 100%;
 	max-width: 100%;
-	height: 100px;
+	height: 85vh;
 	border: 0;
 	resize: none;
 	font-family: "Times New Roman", Times, serif;
 	font-size: 20px;
-	padding-right: 44px;
-	padding-left: 19px;
+	padding-right: 3%;
+	padding-left: 3%;
 	padding-top: 0;
 	overflow-y: hidden;
+	line-height: 24px;
 }
 
 textarea:focus
@@ -39,10 +38,8 @@ textarea:focus
 
 button
 {
-	width: 100px;
 	background: white;
 	border: 1px solid #ddd;
-	margin: 10px;
 }
 
 
@@ -56,11 +53,10 @@ button
 {
 	position: fixed;
 	display: block;
-	top: -10px;
 	z-index: 3;
 	background: #fff;
 	width: 9%;
-	height: 24px;
+	height: 5%;
 	font-size: .9em;
 	color: #888;
 	border-top-width: 0;
@@ -69,12 +65,12 @@ button
 
 #title-button
 {
-	width: 28%;
+	width: 30%;
 	left:  2%;
 	overflow-wrap: break-word;
 	overflow: hidden;
 	text-align: left;
-	padding-left: 24px;
+	padding-left: 1.2em;
 }
 
 #down-button
@@ -179,10 +175,11 @@ button
 	if (caret_local == "" || caret_local == null) caret_local = "false"
 	if (scroll_local == "" || scroll_local == null) scroll_local = "true"
 	txt.value = localStorage.getItem("txt");
+  //txt.style.height = () + "px";
 	var txt_height = txt.offsetHeight;
 	var txt_scroll = 0;
 	var myTimeout;
-	var scroll_top_margin = 23;
+	var scroll_top_margin = 24;
 
 	txt.focus({ preventScroll: true });
 
@@ -193,7 +190,7 @@ button
 
 
 
-	var modheight = txt_height % 23;
+	var modheight = txt_height % 24;
 	txt_height -= modheight;
 	txt.style.height = txt_height + "px";
 
@@ -292,8 +289,8 @@ button
 
 	function txtkeyup()
 	{
-		txt.value += " " + (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop);
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -23
+		txt.value += " " + (txt.scrollHeight - txt_height * 2 - txt.scrollTop);
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -24
 			&& txt.scrollHeight- txt.scrollTop-txt_height < txt_height)
 		{
 			txt.scrollTop += txt_height;
