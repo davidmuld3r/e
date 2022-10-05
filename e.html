@@ -15,6 +15,12 @@ body
 	padding: 0;
 }
 
+div
+{
+	padding: 0;
+	margin: 0;
+}
+
 textarea
 {
 	position: relative;
@@ -155,16 +161,20 @@ button
 <button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEARFFF</button>
+<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
+
+<div id="scroll-dummy"></div>
+
 
 <script type="text/javascript">
 
 
   var scroll_locked = 0;
 	var txt = document.getElementById("txt");
+	var scroll_dummy = document.getElementById("scroll-dummy");
 	var menu_bar = document.getElementById("menu-bar");
 	var menu_open_btn = document.getElementById("menu-open-btn");
 	var savebtn = document.getElementById("save-button");
@@ -196,9 +206,9 @@ button
 	if (scroll_local == "false") { scroll_local = "true"; autoscrollbtn(); }
 
 
-
-	txt_height -= txt_height % 24;
-	txt_height -= 48;
+  var mod_height = 48 + txt_height % 24;
+	txt_height -= mod_height;
+	scroll_dummy.style.height = mod_height + "px";
 	txt.style.height = txt_height + "px";
 
 	txt.style.paddingBottom = (txt_height - scroll_top_margin) + "px";
