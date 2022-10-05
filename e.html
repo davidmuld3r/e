@@ -161,19 +161,15 @@ button
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
 
-<div id="scroll-dummy" style="height: 2000px;">
-	--- Scroll area starts here ---
-</div>
+<div id="scroll-dummy" style="height: 2000px;"></div>
 
 
 <script type="text/javascript">
 
 	(function( win ){
 	var doc = win.document;
+					txt.value += "function"
 	
-	// If there's a hash, or addEventListener is undefined, stop here
-	if( !location.hash && win.addEventListener ){
-		
 		//scroll to 1
 		win.scrollTo( 0, 1 );
 		var scrollTop = 1,
@@ -182,24 +178,23 @@ button
 			},
 		
 			//reset to 0 on bodyready, if needed
+					txt.value += "bodyready"
 			bodycheck = setInterval(function(){
 				if( doc.body ){
 					clearInterval( bodycheck );
 					scrollTop = getScrollTop();
 					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
+					txt.value += "start"
 				}	
 			}, 15 );
 		
 		win.addEventListener( "load", function(){
 			setTimeout(function(){
-				//at load, if user hasn't scrolled more than 20 or so...
-				if( getScrollTop() < 20 ){
 					//reset to hide addr bar at onload
 					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
-				}
+					txt.value += "fin"
 			}, 0);
 		}, false );
-	}
 })( this );
 
 
