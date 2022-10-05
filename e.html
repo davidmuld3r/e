@@ -59,7 +59,7 @@ button
 	background: #fff;
 	width: 100px;
 	height: 24px;
-	font-size: 14px;
+	font-size: 17px;
 	color: #888;
 	border-top-width: 0;
 	border-right-width: 0;
@@ -250,7 +250,12 @@ button
 
 	function clear3()
 	{
-		if (confirm("Are you sure you want to clear?") == true){ download("__CLEARED"); txt.value = "" }
+		if (confirm("Are you sure you want to clear?") == true)
+		{
+			download("__CLEARED");
+			txt.value = ""
+			save();
+		}
 	}
 
 	function entertitle()
@@ -286,8 +291,9 @@ button
 
 
 	function txtkeyup()
-	{txt.value += "  (  " + (txt.scrollHeight - txt_height * 2 - txt.scrollTop) + "  )  ";
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -222)
+	{
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -22
+			&& txt.scrollHeight- txt.scrollTop-txt_height < txt_height)
 		{
 			txt.scrollTop += txt_height;
 		}
