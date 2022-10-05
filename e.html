@@ -179,6 +179,7 @@ button
   {
   	this.scrollTo( 0, 0 );
   	//document.body.classList.add('no-scroll');
+  	scroll_dummy.classList.add('hide');
   	setTimeout(function() { txt.focus(); scroll_locked = 1; }, 1);
 
   }
@@ -186,6 +187,7 @@ button
 
   var scroll_locked = 0;
 	var txt = document.getElementById("txt");
+	var scroll_dummy = document.getElementById("scroll-dummy");
 	var menu_bar = document.getElementById("menu-bar");
 	var menu_open_btn = document.getElementById("menu-open-btn");
 	var savebtn = document.getElementById("save-button");
