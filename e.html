@@ -21,10 +21,10 @@ div
 	margin: 0;
 }
 
-textarea
+#txt
 {
 	position: relative;
-	margin-top: 5vw;
+	top: 5vw;
 	caret-color: transparent;
 	width: 100%;
 	max-width: 100%;
@@ -32,12 +32,12 @@ textarea
 	border: 0;
 	resize: none;
 	font-family: "Times New Roman", Times, serif;
-	font-size: 20px;
+	font-size: 24px;
 	padding-right: 3%;
 	padding-left: 3%;
 	padding-top: 0;
 	overflow-y: hidden;
-	line-height: 24px;
+	line-height: 32px;
 }
 
 textarea:focus
@@ -58,12 +58,20 @@ button
 }
 
 
+#menu-bar
+{
+	position: fixed;
+	width: 100%;
+	border-top: 1px solid #ddd;
+}
+
+
 .menu-btn
 {
 	position: fixed;
 	display: block;
 	z-index: 3;
-	background: #fff;
+	background: transparent;
 	width: 9vw;
 	height: 3vw;
 	font-size: 1.5vw;
@@ -74,7 +82,7 @@ button
 
 #title-button
 {
-	width: 28vw;
+	width: 37vw;
 	left:  2vw;
 	overflow-wrap: break-word;
 	overflow: hidden;
@@ -94,22 +102,22 @@ button
 	font-size: 1.2vw;
 }
 
-#save-button
+#page-button
 {
 	right: 25vw;
 }
 
-#download-button
+#save-button
 {
 	right: 34vw;
 }
 
-#caret-button
+#download-button
 {
 	right: 43vw;
 }
 
-#auto-button
+#caret-button
 {
 	right: 52vw;
 }
@@ -121,7 +129,7 @@ button
 
 #menu-open-btn
 {
-	top: 0;
+	top: 1px;
 	right: 2vw;
 	width: 5vw;
 	margin: 0;
@@ -155,13 +163,12 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
-<button class="menu-btn" id="down-button" onclick="pageup(1)">▼</button>
 <button class="menu-btn" id="caret-button" onclick="caret3()">NOCARET</button>
-<button class="menu-btn" id="auto-button" onclick="autoscrollbtn()">SCROLL</button>
+<button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
+<button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
+<button class="menu-btn" id="page-button" onclick="pageBtn()">1 of 1</button>
 <button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
-<button class="menu-btn" id="clear-button" onclick="clear3()">CLEAR</button>
 </div>
 <button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
@@ -173,16 +180,13 @@ button
 
 
 
-
-	//  ADD PAGE NUMBER BELOW UP  AND DOWN ARROW
-
-
 	var txt = document.getElementById("txt");
 	var scroll_dummy = document.getElementById("scroll-dummy");
 	var menu_bar = document.getElementById("menu-bar");
 	var menu_open_btn = document.getElementById("menu-open-btn");
 	var savebtn = document.getElementById("save-button");
 	var autoscrollbtnel = document.getElementById("auto-button");
+	var page_btn = document.getElementById("page-button");
 	var caretbtnel = document.getElementById("caret-button");
 	var titlebtn = document.getElementById("title-button");
 	var title = localStorage.getItem("title");
@@ -197,10 +201,12 @@ button
 	var txt_height = txt.offsetHeight;
 	var txt_scroll = 0;
 	var myTimeout;
-	var scroll_top_margin = 24;
+	var line_height = 32;
 	var time_since_last_save = 0;
 	var pending_time = -1;
 	var save_pending = false;
+	var p_num = 1;
+	var p_count = 1;
 
 	txt.focus({ preventScroll: true });
 
@@ -210,22 +216,19 @@ button
 	if (scroll_local == "false") { scroll_local = "true"; autoscrollbtn(); }
 
 
-  var mod_height = 48 + txt_height % 24;
+  var mod_height = line_height*2 + txt_height % line_height;
 	txt_height -= mod_height;
 	scroll_dummy.style.height = (mod_height-1) + "px";
 	txt.style.height = txt_height + "px";
 
-	txt.style.paddingBottom = (txt_height - scroll_top_margin) + "px";
+	txt.style.paddingBottom = (txt_height - line_height) + "px";
 	titlebtn.innerHTML = title;
 
 	txt.scrollTop = localStorage.getItem("saved_scrollTop");
 
 
-	txt.onblur = function (event)
-	{ 
-		var el = this; 
-		setTimeout(function() { el.focus() }, 1);
-	};
+	UpdatePageNumber();
+
 
 
 	setInterval(function()
@@ -234,7 +237,7 @@ button
 		{
 			pending_time += 1;
 			time_since_last_save += 1;
-			if ((pending_time >= 2 || time_since_last_save >= 5) && save_pending == true)
+			if ((pending_time >= 3 || time_since_last_save >= 10) && save_pending == true)
 			{
 				save_pending = false;
 				pending_time = -1;
@@ -253,13 +256,16 @@ button
 		localStorage.setItem("saved_scrollTop", txt.scrollTop);
 		if (show_time == 1){
 			savebtn.innerHTML = curr_time();
-			txt.focus();
 		}
 	}
 
 	function pageup(up = -1)
 	{
+		if (up == -1 && p_num == 1 || up == 1 && p_num == p_count) return;
 		txt.scrollTop += up * txt_height;
+
+		localStorage.setItem("saved_scrollTop", txt.scrollTop);
+		UpdatePageNumber();
 	}
 
 	function autoscrollbtn()
@@ -275,6 +281,14 @@ button
 			autoscrollbtnel.innerHTML = "SCROLL";
 		}
 		localStorage.setItem("scroll_local", scroll_local);
+	}
+
+	function pageBtn()
+	{
+		if (p_num == p_count) return;
+		txt.scrollTop = p_count * txt_height;
+
+		UpdatePageNumber();
 	}
 
 	function clear3()
@@ -321,15 +335,23 @@ button
 
 	function txtkeyup()
 	{
-		txt.value += " " + (txt.scrollHeight - txt_height * 2 - txt.scrollTop);
-
 		save_pending = true;
 		pending_time = 0;
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -24
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop > -line_height
 			&& txt.scrollHeight- txt.scrollTop-txt_height < txt_height)
 		{
 			txt.scrollTop += txt_height;
 		}
+
+		UpdatePageNumber();
+	}
+
+
+	function UpdatePageNumber()
+	{
+		p_num = 1 + Math.floor(txt.scrollTop / txt_height);
+		p_count = Math.floor(txt.scrollHeight / txt_height);
+		page_btn.innerHTML = p_num +" of "+p_count;
 	}
 
 
