@@ -343,7 +343,6 @@ button
 
 	function txtkeyup()
 	{
-		txt.value += txt.scrollHeight - txt_height * 2 - txt.scrollTop;
 		save_pending = true;
 		pending_time = 0;
 		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -line_height
