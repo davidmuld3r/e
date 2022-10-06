@@ -23,11 +23,9 @@ div
 
 #txt
 {
-	position: fixed;
+	position: relative;
 	top: 7vw;
 	caret-color: transparent;
-	left: 0;
-	right: 0;
 	width: 100%;
 	max-width: 100%;
 	height: calc(100vh - 9vw);
@@ -35,12 +33,11 @@ div
 	resize: none;
 	font-family: "Times New Roman", Times, serif;
 	font-size: 24px;
-	padding-right: 5%;
-	padding-left: 5%;
+	padding-right: 6%;
+	padding-left: 6%;
 	padding-top: 0;
 	overflow-y: hidden;
 	line-height: 32px;
-	z-index: 2;
 }
 
 textarea:focus
@@ -130,9 +127,12 @@ button
 	right: 44vw;
 }
 
-#scroll-dummy
+
+.menu-btn-closed
 {
-	height: 100vh;
+	opacity: 0;
+	width: 26vw !important;
+	right: 0 !important;
 }
 
 
@@ -179,7 +179,7 @@ button
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
 <div id="page_scroll"></div>
 </div>
-<button class="menu-btn" id="menu-open-btn" onclick="openmenu()">◁</button>
+<button class="menu-btn menu-btn-closed" id="menu-open-btn" onclick="openmenu()">◁</button>
 <textarea id="txt" onkeyup="txtkeyup()"></textarea>
 
 <div id="scroll-dummy"></div>
@@ -228,6 +228,7 @@ button
   var mod_height = txt_height % line_height;
 	txt_height -= mod_height;
 	txt.style.height = txt_height + "px";
+	//scroll_dummy.height = mod_height + "px";
 
 	txt.style.paddingBottom = (txt_height - line_height) + "px";
 	titlebtn.innerHTML = title;
@@ -342,6 +343,7 @@ button
 
 	function txtkeyup()
 	{
+		txt.value += txt.scrollHeight - txt_height * 2 - txt.scrollTop;
 		save_pending = true;
 		pending_time = 0;
 		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -line_height
@@ -417,14 +419,14 @@ button
 		{
 			menu_bar_local = "true";
 			menu_bar.classList.remove('hide');
-			menu_open_btn.classList.add('hide');
+			menu_open_btn.classList.remove('menu-btn-closed');
 			menu_open_btn.innerHTML = "▷"
 		}
 		else
 		{
 			menu_bar_local = "false";
 			menu_bar.classList.add('hide');
-			menu_open_btn.classList.remove('hide');
+			menu_open_btn.classList.add('menu-btn-closed');
 			menu_open_btn.innerHTML = "◁"
 		}
 		localStorage.setItem("menu_bar_local", menu_bar_local);
