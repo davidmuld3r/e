@@ -173,7 +173,7 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="caret-button" onclick="caret3()">_X</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_A</button>
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
 <button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
@@ -290,7 +290,7 @@ button
 
 	window.addEventListener("keydown", function(e)
 	{
-		if([37, 38, 39, 40, 67, 69, 83].indexOf(e.keyCode) > -1)
+		if([37, 38, 39, 40, 69, 73, 82, 83].indexOf(e.keyCode) > -1)
 		{
 			if (ctrl_down)
 			{
@@ -298,8 +298,9 @@ button
 				if (e.keyCode == 37 || e.keyCode == 39) openmenu();  // ctrl + left / right
 				if (e.keyCode == 38) pageup(-1);  // ctrl + up
 				else if (e.keyCode == 40) pageup(1);  // ctrl + down
-				else if (e.keyCode == 67) caret3();  // ctrl + c
+				else if (e.keyCode == 73) caret3();  // ctrl + i
 				else if (e.keyCode == 69) export_txt();  // ctrl + e
+				else if (e.keyCode == 82) location.reload(true);  // ctrl + r
 				else if (e.keyCode == 83) save(1);  // ctrl + s
 			}
 			else if ([37, 38, 39, 40].indexOf(e.keyCode) > -1)
@@ -423,6 +424,7 @@ button
 
 	function txtkeyup()
 	{
+		txt.value += (txt.scrollHeight - txt_height * 2 - txt.scrollTop);
 		save_pending = true;
 		pending_time = 0;
 		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == -line_height
