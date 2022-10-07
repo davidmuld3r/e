@@ -150,7 +150,7 @@ button
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 0px;
 }
 
 ::-webkit-scrollbar-track {
@@ -288,7 +288,11 @@ button
 
 	window.addEventListener("keydown", function(e)
 	{
-		if([37, 38, 39, 40, 69, 73, 83].indexOf(e.keyCode) > -1)
+		if (e.keyCode == 13 || (e.keyCode >= 48 && e.keyCode <= 90) || (e.keyCode >= 186 && e.keyCode <= 222))
+		{
+			if (document.activeElement != txt) txt.focus();
+		}
+		else if([37, 38, 39, 40, 69, 73, 83].indexOf(e.keyCode) > -1)
 		{
 			if (ctrl_down)
 			{
@@ -403,7 +407,7 @@ button
 	function export_txt(append="")
 	{
 		var data = new Blob([txt.value], {type: 'text/plain'});
-		var fileName = title.replace(/\s/g, '_') +"__"+ curr_date() +"__"+ curr_time("-") + append;
+		var fileName = title.replace(/[^a-zA-Z ]/g, "").replace(/\s/g, '_') +"__"+ curr_date() +"__"+ curr_time("-") + append;
 
 		fetch(window.URL.createObjectURL(data), { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
     .then(res => res.blob())
@@ -424,7 +428,7 @@ button
 	{
 		save_pending = true;
 		pending_time = 0;
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == -line_height
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -line_height
 			&& txt.scrollHeight - txt.scrollTop - txt_height < txt_height)
 		{
 			txt.scrollTop += txt_height;
