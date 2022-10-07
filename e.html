@@ -38,6 +38,7 @@ div
 	padding-top: 0;
 	overflow-y: hidden;
 	line-height: 32px;
+	z-index: 4;
 }
 
 textarea:focus
@@ -88,6 +89,14 @@ button
 	color: #888;
 	border-top-width: 0;
 	border-right-width: 0;
+}
+
+#scroll-dummy
+{
+	position: absolute;
+	height: 100px;
+	width: 100%;
+	z-index: 1;
 }
 
 #title-button
@@ -173,7 +182,7 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="caret-button" onclick="caret3()">_w</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_8</button>
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
 <button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
@@ -233,7 +242,7 @@ button
 		txt_height -= mod_height;
 
 		txt.style.height = txt_height + "px";
-		scroll_dummy.style.height = (window.innerWidth * .09) + "px";
+		scroll_dummy.style.top = (window.innerHeight - 100) + "px";
 		txt.style.paddingBottom = (txt_height - line_height) + "px";
 
 	}, true);
@@ -250,7 +259,7 @@ button
   var mod_height = txt_height % line_height;
 	txt_height -= mod_height;
 	txt.style.height = txt_height + "px";
-	scroll_dummy.height = (window.innerWidth * .09) + "px";
+	scroll_dummy.style.top = (window.innerHeight - 100) + "px";
 
 	txt.style.paddingBottom = (txt_height - line_height) + "px";
 	titlebtn.innerHTML = title;
