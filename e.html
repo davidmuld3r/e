@@ -173,7 +173,7 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="caret-button" onclick="caret3()">_K</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_S</button>
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
 <button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
@@ -227,14 +227,7 @@ button
 
 	window.addEventListener('resize', function(event)
 	{
-		txt_height = window.innerHeight - window.innerWidth * .09;
-
-	  var mod_height = txt_height % line_height;
-		txt_height -= mod_height;
-
-		txt.style.height = txt_height + "px";
-		scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop + 1) + "px";
-		txt.style.paddingBottom = (txt_height - line_height) + "px";
+		RefreshVars();
 
 	}, true);
 
@@ -300,7 +293,7 @@ button
 				else if (e.keyCode == 40) pageup(1);  // ctrl + down
 				else if (e.keyCode == 73) caret3();  // ctrl + i
 				else if (e.keyCode == 69) export_txt();  // ctrl + e
-				else if (e.keyCode == 82) location.reload(true);  // ctrl + r     ##### remove the true[it forces cache reload]
+				else if (e.keyCode == 82) RefreshVars();  // ctrl + r
 				else if (e.keyCode == 83) save(1);  // ctrl + s
 			}
 			else if ([37, 38, 39, 40].indexOf(e.keyCode) > -1)
@@ -339,6 +332,18 @@ button
 
 
 
+
+	function RefreshVars()
+	{
+		txt_height = window.innerHeight - window.innerWidth * .09;
+
+	  var mod_height = txt_height % line_height;
+		txt_height -= mod_height;
+
+		txt.style.height = txt_height + "px";
+		scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop + 1) + "px";
+		txt.style.paddingBottom = (txt_height - line_height) + "px";
+	}
 
 	function save(show_time=0)
 	{
