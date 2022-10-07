@@ -91,14 +91,6 @@ button
 	border-right-width: 0;
 }
 
-#scroll-dummy
-{
-	position: absolute;
-	height: 100px;
-	width: 100%;
-	z-index: 1;
-}
-
 #title-button
 {
 	width: 46vw;
@@ -135,7 +127,6 @@ button
 #caret-button
 {
 	right: 44vw;
-	font-family: cursive;
 }
 
 
@@ -182,7 +173,7 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="caret-button" onclick="caret3()">_5</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_3</button>
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
 <button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
@@ -242,7 +233,7 @@ button
 		txt_height -= mod_height;
 
 		txt.style.height = txt_height + "px";
-		scroll_dummy.style.top = (window.innerHeight - 100) + "px";
+		scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop) + "px";
 		txt.style.paddingBottom = (txt_height - line_height) + "px";
 
 	}, true);
@@ -259,7 +250,7 @@ button
   var mod_height = txt_height % line_height;
 	txt_height -= mod_height;
 	txt.style.height = txt_height + "px";
-	scroll_dummy.style.top = (window.innerHeight - 1) + "px";
+	scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop) + "px";
 
 	txt.style.paddingBottom = (txt_height - line_height) + "px";
 	titlebtn.innerHTML = title;
