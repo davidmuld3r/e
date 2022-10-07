@@ -49,7 +49,7 @@ textarea:focus
 button
 {
 	background: white;
-	border: 1px solid #bbb;
+	border: 1px solid #000;
 }
 
 
@@ -64,7 +64,7 @@ button
 	top: calc(5vw - .6vw);
 	left: 74vw;
 	height: .6vw;
-	background: #bbb;
+	background: #000;
 	z-index: 2;
 }
 
@@ -73,7 +73,7 @@ button
 {
 	position: fixed;
 	width: 100%;
-	border-top: 1px solid #bbb;
+	border-top: 1px solid #000;
 }
 
 
@@ -427,7 +427,7 @@ button
 		txt.value += (txt.scrollHeight - txt_height * 2 - txt.scrollTop);
 		save_pending = true;
 		pending_time = 0;
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == -line_height
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == 0
 			&& txt.scrollHeight - txt.scrollTop - txt_height < txt_height)
 		{
 			txt.scrollTop += txt_height;
