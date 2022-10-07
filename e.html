@@ -28,7 +28,7 @@ div
 	caret-color: transparent;
 	width: 100%;
 	max-width: 100%;
-	height: calc(100vh - 9vw);
+	height: 32px;
 	border: 0;
 	resize: none;
 	font-family: "Times New Roman", Times, serif;
@@ -48,7 +48,7 @@ textarea:focus
 button
 {
 	background: white;
-	border: 1px solid #ddd;
+	border: 1px solid #bbb;
 }
 
 
@@ -63,7 +63,7 @@ button
 	top: calc(5vw - .6vw);
 	left: 74vw;
 	height: .6vw;
-	background: #ddd;
+	background: #bbb;
 	z-index: 2;
 }
 
@@ -72,7 +72,7 @@ button
 {
 	position: fixed;
 	width: 100%;
-	border-top: 1px solid #ddd;
+	border-top: 1px solid #bbb;
 }
 
 
@@ -98,6 +98,7 @@ button
 	overflow: hidden;
 	text-align: left;
 	padding-left: 2vw;
+	font-size: 24px;
 }
 
 #down-button
@@ -125,6 +126,7 @@ button
 #caret-button
 {
 	right: 44vw;
+	font-family: cursive;
 }
 
 
@@ -144,7 +146,6 @@ button
 	margin: 0;
 	padding: 0;
 	border-right-width: 1px;
-	color: #bbb;
 	font-size: 1.2vw;
 }
 
@@ -172,10 +173,10 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="caret-button" onclick="caret3()">NOCARET</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_</button>
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
-<button class="menu-btn" id="download-button" onclick="download()">EXPORT</button>
+<button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
 <button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
 <div id="page_scroll"></div>
 </div>
@@ -207,6 +208,7 @@ button
 	if (caret_local == "" || caret_local == null) caret_local = "false"
 	if (scroll_local == "" || scroll_local == null) scroll_local = "true"
 	txt.value = localStorage.getItem("txt");
+	var txt_top = txt.offsetTop;
 	var txt_height = txt.offsetHeight;
 	var txt_scroll = 0;
 	var myTimeout;
@@ -216,8 +218,25 @@ button
 	var save_pending = false;
 	var p_num = 1;
 	var p_count = 1;
+	var ctrl_down = false;
+	var caret_timeout;
 
 	txt.focus({ preventScroll: true });
+
+
+
+	window.addEventListener('resize', function(event)
+	{
+		txt_height = window.innerHeight - window.innerWidth * .09;
+
+	  var mod_height = txt_height % line_height;
+		txt_height -= mod_height;
+
+		txt.style.height = txt_height + "px";
+		txt.style.paddingBottom = (txt_height - line_height) + "px";
+	}, true);
+
+
 
 
 	if (menu_bar_local == "true") { menu_bar_local = "false"; openmenu(); }
@@ -225,6 +244,7 @@ button
 	if (scroll_local == "false") { scroll_local = "true"; autoscrollbtn(); }
 
 
+	txt_height = window.innerHeight - window.innerWidth * .09;
   var mod_height = txt_height % line_height;
 	txt_height -= mod_height;
 	txt.style.height = txt_height + "px";
@@ -236,7 +256,65 @@ button
 	txt.scrollTop = localStorage.getItem("saved_scrollTop");
 
 
+
+
+
 	UpdatePageScroll();
+
+
+	document.onkeydown = function (event)
+	{
+		switch (event.keyCode)
+		{
+			case 17:
+				// ctrl
+				ctrl_down = true;
+			break;
+		}
+	}
+
+
+	document.onkeyup = function (event)
+	{
+		switch (event.keyCode)
+		{
+			case 17:
+				// ctrl
+				ctrl_down = false;
+			break;
+		}
+	}
+
+
+	window.addEventListener("keydown", function(e)
+	{
+		if([37, 38, 39, 40, 67, 69, 83].indexOf(e.keyCode) > -1)
+		{
+			if (ctrl_down)
+			{
+				e.preventDefault();
+				if (e.keyCode == 37 || e.keyCode == 39) openmenu();  // ctrl + left / right
+				if (e.keyCode == 38) pageup(-1);  // ctrl + up
+				else if (e.keyCode == 40) pageup(1);  // ctrl + down
+				else if (e.keyCode == 67) caret3();  // ctrl + c
+				else if (e.keyCode == 69) export_txt();  // ctrl + e
+				else if (e.keyCode == 83) save(1);  // ctrl + s
+			}
+			else if ([37, 38, 39, 40].indexOf(e.keyCode) > -1)
+			{
+				// arrow keys
+				if (caret_local == "false")
+				{
+					txt.style.caretColor = "black";
+					clearTimeout(caret_timeout);
+					caret_timeout = setTimeout(function(){if (caret_local == "false") txt.style.caretColor = "transparent";}, 3000);
+				}
+			}
+		}
+	}, false);
+
+
+
 
 
 
@@ -270,7 +348,7 @@ button
 
 	function pageup(up = -1)
 	{
-		txt.scrollTop += up * txt_height;
+		txt.scrollTop += up * (txt_height - line_height);
 
 		localStorage.setItem("saved_scrollTop", txt.scrollTop);
 		UpdatePageScroll();
@@ -303,7 +381,7 @@ button
 	{
 		if (confirm("Are you sure you want to clear?") == true)
 		{
-			download("__CLEARED");
+			export_txt("__CLEARED");
 			txt.value = ""
 			save();
 		}
@@ -321,7 +399,7 @@ button
 	}
 
 
-	function download(append="")
+	function export_txt(append="")
 	{
 		var data = new Blob([txt.value], {type: 'text/plain'});
 		var fileName = title.replace(/\s/g, '_') +"__"+ curr_date() +"__"+ curr_time("-") + append;
@@ -345,8 +423,8 @@ button
 	{
 		save_pending = true;
 		pending_time = 0;
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop >= -line_height
-			&& txt.scrollHeight- txt.scrollTop-txt_height < txt_height)
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == -line_height
+			&& txt.scrollHeight - txt.scrollTop - txt_height < txt_height - line_height)
 		{
 			txt.scrollTop += txt_height;
 		}
@@ -399,13 +477,13 @@ button
 		if (caret_local == "false")
 		{
 			caret_local = "true";
-			caretbtnel.innerHTML = "CARET";
+			caretbtnel.innerHTML = "ꕯ";
 			txt.style.caretColor = "black";
 		}
 		else
 		{
 			caret_local = "false";
-			caretbtnel.innerHTML = "NOCARET";
+			caretbtnel.innerHTML = "_";
 			txt.style.caretColor = "transparent";
 		}
 		localStorage.setItem("caret_local", caret_local);
