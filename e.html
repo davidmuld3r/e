@@ -28,7 +28,7 @@ div
 	caret-color: transparent;
 	width: 100%;
 	max-width: 100%;
-	height: 3200px;
+	height: 32px;
 	border: 0;
 	resize: none;
 	font-family: "Times New Roman", Times, serif;
@@ -85,8 +85,8 @@ button
 	background: transparent;
 	width: 9vw;
 	height: 5vw;
-	font-size: 1.5vw;
-	color: #888;
+	font-size: 1.7vw;
+	color: #000;
 	border-top-width: 0;
 	border-right-width: 0;
 }
@@ -105,13 +105,13 @@ button
 #down-button
 {
 	right: 8vw;
-	font-size: 1.2vw;
+	font-size: 1.5vw;
 }
 
 #up-button
 {
 	right: 17vw;
-	font-size: 1.2vw;
+	font-size: 1.5vw;
 }
 
 #save-button
@@ -146,7 +146,7 @@ button
 	margin: 0;
 	padding: 0;
 	border-right-width: 1px;
-	font-size: 1.2vw;
+	font-size: 1.5vw;
 }
 
 ::-webkit-scrollbar {
@@ -173,7 +173,7 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="caret-button" onclick="caret3()">_S</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_F</button>
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
 <button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
@@ -239,13 +239,7 @@ button
 	if (scroll_local == "false") { scroll_local = "true"; autoscrollbtn(); }
 
 
-	txt_height = window.innerHeight - window.innerWidth * .09;
-  var mod_height = txt_height % line_height;
-	txt_height -= mod_height;
-	txt.style.height = txt_height + "px";
-	scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop + 1) + "px";
-
-	txt.style.paddingBottom = (txt_height - line_height) + "px";
+	RefreshVars ();
 	titlebtn.innerHTML = title;
 
 	txt.scrollTop = localStorage.getItem("saved_scrollTop");
@@ -253,6 +247,17 @@ button
 
 
 
+	function RefreshVars()
+	{
+		txt_height = window.innerHeight - window.innerWidth * .08;
+
+	  var mod_height = txt_height % line_height;
+		txt_height -= mod_height;
+
+		txt.style.height = txt_height + "px";
+		scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop) + "px";
+		txt.style.paddingBottom = (txt_height - line_height) + "px";
+	}
 
 	UpdatePageScroll();
 
@@ -333,17 +338,6 @@ button
 
 
 
-	function RefreshVars()
-	{
-		txt_height = window.innerHeight - window.innerWidth * .09;
-
-	  var mod_height = txt_height % line_height;
-		txt_height -= mod_height;
-
-		txt.style.height = txt_height + "px";
-		scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop + 1) + "px";
-		txt.style.paddingBottom = (txt_height - line_height) + "px";
-	}
 
 	function save(show_time=0)
 	{
@@ -429,10 +423,9 @@ button
 
 	function txtkeyup()
 	{
-		txt.value += (txt.scrollHeight - txt_height * 2 - txt.scrollTop);
 		save_pending = true;
 		pending_time = 0;
-		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == 0
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == -line_height
 			&& txt.scrollHeight - txt.scrollTop - txt_height < txt_height)
 		{
 			txt.scrollTop += txt_height;
