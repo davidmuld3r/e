@@ -249,6 +249,7 @@ button
 	txt_height -= mod_height;
 	txt.style.height = txt_height + "px";
 	//scroll_dummy.height = mod_height + "px";
+	scroll_dummy.height =  "3000px";
 
 	txt.style.paddingBottom = (txt_height - line_height) + "px";
 	titlebtn.innerHTML = title;
@@ -424,7 +425,7 @@ button
 		save_pending = true;
 		pending_time = 0;
 		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - txt.scrollTop == -line_height
-			&& txt.scrollHeight - txt.scrollTop - txt_height < txt_height - line_height)
+			&& txt.scrollHeight - txt.scrollTop - txt_height < txt_height)
 		{
 			txt.scrollTop += txt_height;
 		}
