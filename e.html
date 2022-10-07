@@ -233,7 +233,7 @@ button
 		txt_height -= mod_height;
 
 		txt.style.height = txt_height + "px";
-		scroll_dummy.height = mod_height + "px";
+		scroll_dummy.height = (window.innerWidth * .09) + "px";
 		txt.style.paddingBottom = (txt_height - line_height) + "px";
 
 	}, true);
@@ -250,7 +250,7 @@ button
   var mod_height = txt_height % line_height;
 	txt_height -= mod_height;
 	txt.style.height = txt_height + "px";
-	scroll_dummy.height = mod_height + "px";
+	scroll_dummy.height = (window.innerWidth * .09) + "px";
 
 	txt.style.paddingBottom = (txt_height - line_height) + "px";
 	titlebtn.innerHTML = title;
