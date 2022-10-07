@@ -173,7 +173,7 @@ button
 
 <div id="menu-bar" class="hide">
 <button class="menu-btn" id="title-button" onclick="entertitle()"></button>
-<button class="menu-btn" id="caret-button" onclick="caret3()">_A</button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_K</button>
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
 <button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
@@ -300,7 +300,7 @@ button
 				else if (e.keyCode == 40) pageup(1);  // ctrl + down
 				else if (e.keyCode == 73) caret3();  // ctrl + i
 				else if (e.keyCode == 69) export_txt();  // ctrl + e
-				else if (e.keyCode == 82) location.reload(true);  // ctrl + r
+				else if (e.keyCode == 82) location.reload(true);  // ctrl + r     ##### remove the true[it forces cache reload]
 				else if (e.keyCode == 83) save(1);  // ctrl + s
 			}
 			else if ([37, 38, 39, 40].indexOf(e.keyCode) > -1)
