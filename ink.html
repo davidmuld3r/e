@@ -187,7 +187,7 @@ button
 <button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
 <button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
 <button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
-<button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
+<button class="menu-btn" id="save-button" onclick="save(1)">SAVEs</button>
 <div id="page_scroll"></div>
 </div>
 <button class="menu-btn menu-btn-closed" id="menu-open-btn" onclick="openmenu()">◁</button>
@@ -267,7 +267,7 @@ button
 
 	function RefreshVars()
 	{
-		txt_height = window.innerHeight - window.innerWidth * .08;
+		txt_height = window.innerHeight - window.innerWidth * .1;
 		//txt_height = window.innerHeight - line_height;
 
 	  var mod_height = txt_height % line_height;
