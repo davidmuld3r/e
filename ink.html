@@ -1,0 +1,582 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Typing on Ink</title>
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320"/>
+<meta name = "viewport" content = "width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale = 1.0, user-scalable = no">
+
+
+<style>
+body
+{
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+div
+{
+	padding: 0;
+	margin: 0;
+}
+
+#txt
+{
+	position: relative;
+	top: 7vw;
+	caret-color: transparent;
+	width: 100%;
+	max-width: 100%;
+	height: 32px;
+	border: 0;
+	resize: none;
+	padding-right: 6%;
+	padding-left: 6%;
+	padding-top: 0;
+	overflow-y: hidden;
+	z-index: 4;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 24px;
+	line-height: 32px;
+}
+
+textarea:focus
+{
+	outline: none !important;
+}
+
+button
+{
+	background: white;
+	border: 1px solid #000;
+}
+
+.font-test
+{
+	font-family: "Times New Roman", Times, serif;
+	position: absolute;
+	float: left;
+	white-space: nowrap;
+	visibility: hidden;
+}
+
+
+.hide
+{
+	display: none;
+}
+
+#page_scroll
+{
+	position: fixed;
+	top: calc(5vw - .6vw);
+	left: 74vw;
+	height: .6vw;
+	background: #000;
+	z-index: 2;
+}
+
+
+#menu-bar
+{
+	position: fixed;
+	width: 100%;
+	border-top: 1px solid #000;
+}
+
+
+.menu-btn
+{
+	position: fixed;
+	display: block;
+	z-index: 3;
+	background: transparent;
+	width: 9vw;
+	height: 5vw;
+	font-size: 1.7vw;
+	color: #000;
+	border-top-width: 0;
+	border-right-width: 0;
+}
+
+#title-button
+{
+	width: 46vw;
+	left:  2vw;
+	overflow-wrap: break-word;
+	overflow: hidden;
+	text-align: left;
+	padding-left: 2vw;
+	font-size: 24px;
+}
+
+#down-button
+{
+	right: 8vw;
+	font-size: 1.5vw;
+}
+
+#up-button
+{
+	right: 17vw;
+	font-size: 1.5vw;
+}
+
+#save-button
+{
+	right: 26vw;
+}
+
+#download-button
+{
+	right: 35vw;
+}
+
+#caret-button
+{
+	right: 44vw;
+	font-size: 2vw;
+}
+
+
+.menu-btn-closed
+{
+	opacity: 0;
+	width: 26vw !important;
+	right: 0 !important;
+}
+
+
+#menu-open-btn
+{
+	top: 1px;
+	right: 2vw;
+	width: 6vw;
+	margin: 0;
+	padding: 0;
+	border-right-width: 1px;
+	font-size: 1.5vw;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ddd; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #999; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999; 
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="menu-bar" class="hide">
+<button class="menu-btn" id="title-button" onclick="entertitle()"></button>
+<button class="menu-btn" id="caret-button" onclick="caret3()">_</button>
+<button class="menu-btn" id="up-button" onclick="pageup(-1)">▲</button>
+<button class="menu-btn" id="down-button" onclick="pageup(1)">▼</span></button>
+<button class="menu-btn" id="download-button" onclick="export_txt()">EXPORT</button>
+<button class="menu-btn" id="save-button" onclick="save(1)">SAVE</button>
+<div id="page_scroll"></div>
+</div>
+<button class="menu-btn menu-btn-closed" id="menu-open-btn" onclick="openmenu()">◁</button>
+<textarea id="txt"></textarea>
+
+<div id="scroll-dummy"></div>
+
+
+<script type="text/javascript">
+	if (localStorage.getItem("menu_bar_local") === null)
+	{
+		localStorage.setItem("menu_bar_local", "true");
+		localStorage.setItem("caret_local", "true");
+		localStorage.setItem("scroll_local", "true");
+	}
+
+
+
+	var txt = document.getElementById("txt");
+	var scroll_dummy = document.getElementById("scroll-dummy");
+	var menu_bar = document.getElementById("menu-bar");
+	var menu_open_btn = document.getElementById("menu-open-btn");
+	var savebtn = document.getElementById("save-button");
+	var autoscrollbtnel = document.getElementById("auto-button");
+	var page_scroll = document.getElementById("page_scroll");
+	var caretbtnel = document.getElementById("caret-button");
+	var titlebtn = document.getElementById("title-button");
+	var title = localStorage.getItem("title");
+	var menu_bar_local = localStorage.getItem("menu_bar_local");
+	var caret_local = localStorage.getItem("caret_local");
+	var scroll_local = localStorage.getItem("scroll_local");
+	if (title == "" || title == null) title = "Title"
+	if (menu_bar_local == "" || menu_bar_local == null) menu_bar_local = "false"
+	if (caret_local == "" || caret_local == null) caret_local = "false"
+	if (scroll_local == "" || scroll_local == null) scroll_local = "true"
+	txt.value = localStorage.getItem("txt");
+	var txt_top = txt.offsetTop;
+	var txt_height = txt.offsetHeight;
+	var txt_scroll = 0;
+	var myTimeout;
+	var line_height = 32;
+	var time_since_last_save = 0;
+	var pending_time = -1;
+	var save_pending = false;
+	var scroll_pending_time = -1;
+	var scroll_save_pending = false;
+	var p_num = 1;
+	var p_count = 1;
+	var ctrl_down = false;
+	var caret_timeout;
+	var old_scroll = txt.scrollTop;
+
+	txt.focus({ preventScroll: true });
+
+
+
+	window.addEventListener('resize', function(event)
+	{
+		RefreshVars();
+	}, true);
+
+
+
+
+	if (menu_bar_local == "true") { menu_bar_local = "false"; openmenu(); }
+	if (caret_local == "true") { caret_local = "false"; caret3(); }
+	if (scroll_local == "false") { scroll_local = "true"; autoscrollbtn(); }
+
+
+	titlebtn.innerHTML = title;
+	RefreshVars ();
+	txt.scrollTop = localStorage.getItem("saved_scrollTop");
+	UpdatePageScroll();
+
+
+
+
+	function RefreshVars()
+	{
+		txt_height = window.innerHeight - window.innerWidth * .08;
+
+	  var mod_height = txt_height % line_height;
+		txt_height -= mod_height;
+
+		txt.style.height = txt_height + "px";
+		scroll_dummy.style.height = (window.innerHeight - scroll_dummy.offsetTop + 1) + "px";
+		txt.style.paddingBottom = (txt_height - line_height) + "px";
+		UpdatePageScroll();
+	}
+
+
+
+
+
+	document.onkeydown = function (e)
+	{
+		switch (e.keyCode)
+		{
+			case 17:
+				// ctrl
+				ctrl_down = true;
+			break;
+		}
+
+		if ([37, 38, 39, 40].indexOf(e.keyCode) > -1)
+		{
+			if (e.keyCode == 39 || e.keyCode == 40) txt.scrollTop = Math.ceil (txt.scrollTop/txt_height) * txt_height;
+			else txt.scrollTop = txt.scrollTop - (txt.scrollTop % txt_height);
+			UpdatePageScroll ();
+		}
+	}
+
+
+	document.onkeyup = function (e)
+	{
+		switch (e.keyCode)
+		{
+			case 17:
+				// ctrl
+				ctrl_down = false;
+			break;
+		}
+
+		if ([37, 38, 39, 40].indexOf(e.keyCode) == -1) txtkeyup();
+		else
+		{
+			if (e.keyCode == 39 || e.keyCode == 40) txt.scrollTop = Math.ceil (txt.scrollTop/txt_height) * txt_height;
+			else txt.scrollTop = txt.scrollTop - (txt.scrollTop % txt_height);
+			pending_time = 0;
+			scroll_save_pending = true;
+			UpdatePageScroll ();
+		}
+	}
+
+
+
+	function txtkeyup()
+	{
+		save_pending = true;
+		pending_time = 0;
+		if (scroll_local == "true" && txt.scrollHeight - txt_height * 2 - old_scroll >= 0
+			&& txt.scrollHeight - txt.scrollTop - txt_height < txt_height)
+		{
+			txt.scrollTop += txt_height;
+		}
+
+		txt.scrollTop = txt.scrollTop - (txt.scrollTop % txt_height);
+		pending_time = 0;
+		scroll_save_pending = true;
+
+		UpdatePageScroll();
+	}
+
+
+
+	window.addEventListener("keydown", function(e)
+	{
+		if (e.keyCode == 13 || (e.keyCode >= 48 && e.keyCode <= 90) || (e.keyCode >= 186 && e.keyCode <= 222))
+		{
+			if (document.activeElement != txt) txt.focus();
+		}
+		else if([37, 38, 39, 40, 69, 73, 83].indexOf(e.keyCode) > -1)
+		{
+			if (ctrl_down)
+			{
+				e.preventDefault();
+				if (e.keyCode == 37 || e.keyCode == 39) openmenu();  // ctrl + left / right
+				if (e.keyCode == 38) pageup(-1);  // ctrl + up
+				else if (e.keyCode == 40) pageup(1);  // ctrl + down
+				else if (e.keyCode == 73) caret3();  // ctrl + i
+				else if (e.keyCode == 69) export_txt();  // ctrl + e
+				else if (e.keyCode == 83) save(1);  // ctrl + s
+			}
+			else if ([37, 38, 39, 40].indexOf(e.keyCode) > -1)
+			{
+				// arrow keys
+				if (caret_local == "false")
+				{
+					txt.style.caretColor = "black";
+					clearTimeout(caret_timeout);
+					caret_timeout = setTimeout(function(){if (caret_local == "false") txt.style.caretColor = "transparent";}, 3000);
+				}
+				UpdatePageScroll ();
+			}
+		}
+	}, false);
+
+
+
+
+
+
+
+	setInterval(function()
+	{
+		if (scroll_save_pending == true)
+		{
+			scroll_pending_time += 1;
+			if (scroll_pending_time >= 1 && scroll_save_pending == true)
+			{
+				scroll_save_pending = false;
+				scroll_pending_time = -1;
+				localStorage.setItem("saved_scrollTop", txt.scrollTop);
+			}
+		}
+
+		if (save_pending == true)
+		{
+			pending_time += 1;
+			time_since_last_save += 1;
+			if ((pending_time >= 3 || time_since_last_save >= 10) && save_pending == true)
+			{
+				save_pending = false;
+				pending_time = -1;
+				time_since_last_save = 0;
+				save();
+			}
+		}
+	}, 1000);
+
+
+
+
+
+	function save(show_time=0)
+	{
+		localStorage.setItem("txt", txt.value);
+		localStorage.setItem("saved_scrollTop", txt.scrollTop);
+		if (show_time == 1){
+			savebtn.innerHTML = curr_time();
+		}
+	}
+
+	function pageup(up = -1)
+	{
+		if (up == -1 && txt.scrollTop == 0 || up == 1 && txt.scrollTop >= txt.scrollHeight - txt_height*2 + line_height) return;
+		if (up == -1) txt.scrollTop = Math.ceil ((txt.scrollTop-txt_height)/txt_height) * txt_height;
+		else txt.scrollTop += txt_height - (txt.scrollTop % txt_height);
+
+		localStorage.setItem("saved_scrollTop", txt.scrollTop);
+		UpdatePageScroll();
+	}
+
+	function autoscrollbtn()
+	{
+		if (scroll_local == "true")
+		{
+			scroll_local = "false";
+			autoscrollbtnel.innerHTML = "NOSCROLL";
+		}
+		else
+		{
+			scroll_local = "true";
+			autoscrollbtnel.innerHTML = "SCROLL";
+		}
+		localStorage.setItem("scroll_local", scroll_local);
+	}
+
+	function pageBtn()
+	{
+		if (p_num == p_count) return;
+		txt.scrollTop = p_count * txt_height;
+
+		UpdatePageScroll();
+	}
+
+	function clear3()
+	{
+		if (confirm("Are you sure you want to clear?") == true)
+		{
+			export_txt("__CLEARED");
+			txt.value = ""
+			save();
+		}
+	}
+
+	function entertitle()
+	{
+		let title_input = prompt("Enter title:", title);
+		if (title_input != null && title_input != "")
+		{
+			title = title_input;
+			titlebtn.innerHTML = title;
+			localStorage.setItem("title", title);
+		}
+	}
+
+
+	function export_txt(append="")
+	{
+		var data = new Blob([txt.value], {type: 'text/plain'});
+		var fileName = title.replace(/[^a-zA-Z ]/g, "").replace(/\s/g, '_') +"__"+ curr_date() +"__"+ curr_time("-") + append;
+
+		fetch(window.URL.createObjectURL(data), { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
+    .then(res => res.blob())
+    .then(res => {
+      const aElement = document.createElement('a');
+      aElement.setAttribute('download', fileName);
+      const href = URL.createObjectURL(res);
+      aElement.href = href;
+      aElement.setAttribute('target', '_blank');
+      aElement.click();
+      URL.revokeObjectURL(href);
+    });
+	}
+
+
+
+
+	function UpdatePageScroll()
+	{
+		old_scroll = txt.scrollTop;
+
+		var wdth = (txt.scrollTop/(txt.scrollHeight-txt_height-(txt.scrollHeight % txt_height))) * 18;
+		page_scroll.style.width = wdth + "vw";
+	}
+
+
+
+	function txtblur()
+	{
+		txt_scroll = txt.scrollTop;
+	}
+
+	function curr_date(sep="-")
+	{
+		var today = new Date();
+		var year = 1900 + today.getYear()
+		var month = 1 + today.getMonth()
+		var day = today.getDate()
+		if (month < 10) month = "0" + month;
+		if (day < 10) day = "0" + day;
+		return year + sep + month + sep + day;
+	}
+
+	function curr_time(sep=":")
+	{
+		var today = new Date();
+		var hours = today.getHours()
+		var minutes = today.getMinutes()
+		var seconds = today.getSeconds()
+		if (hours < 10) hours = "0" + hours;
+		if (minutes < 10) minutes = "0" + minutes;
+		if (seconds < 10) seconds = "0" + seconds;
+		return hours + sep + minutes + sep + seconds;
+	}
+
+
+	function caret3()
+	{
+		if (caret_local == "false")
+		{
+			caret_local = "true";
+			caretbtnel.innerHTML = "ꕯ";
+			txt.style.caretColor = "black";
+		}
+		else
+		{
+			caret_local = "false";
+			caretbtnel.innerHTML = "_";
+			txt.style.caretColor = "transparent";
+		}
+		localStorage.setItem("caret_local", caret_local);
+	}
+
+
+	function openmenu()
+	{
+		if (menu_bar_local == "false")
+		{
+			menu_bar_local = "true";
+			menu_bar.classList.remove('hide');
+			menu_open_btn.classList.remove('menu-btn-closed');
+			menu_open_btn.innerHTML = "▷"
+		}
+		else
+		{
+			menu_bar_local = "false";
+			menu_bar.classList.add('hide');
+			menu_open_btn.classList.add('menu-btn-closed');
+			menu_open_btn.innerHTML = "◁"
+		}
+		localStorage.setItem("menu_bar_local", menu_bar_local);
+	}
+
+
+
+</script>
+
+
+</body>
+</html>
